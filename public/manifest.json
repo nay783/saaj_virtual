@@ -1,0 +1,17 @@
+{
+  "name": "SAAJ Virtual",
+  "short_name": "SAAJ Virtual",
+  "description": "Plataforma de informação, saúde sexual e agendamento de consultas para jovens em Moçambique.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#F8FAFC",
+  "icons": [
+    {
+      "src": "/logo/LOGO_APP.jpg",
+      "sizes": "192x192 512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
