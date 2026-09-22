@@ -2,13 +2,11 @@ import { AssistantId, ServiceArea } from "@/types/saaj";
 
 export type VapiCallStatus =
   | "idle"
-  | "preparing"
-  | "requesting_permission"
-  | "connecting"
-  | "connected"
+  | "starting"
+  | "active"
   | "ending"
   | "ended"
-  | "failed";
+  | "error";
 
 export interface VapiCallConfig {
   publicKey: string;

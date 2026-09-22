@@ -14,7 +14,7 @@ class VapiClientService {
   // Session Token to prevent asynchronous race conditions & stale events
   private currentSessionId = 0;
   private currentCallStatus: VapiCallStatus = "idle";
-  private wasEverConnected = false;
+  private wasEverActive = false;
   private lastEndedReason: string | null = null;
   private lastExplicitUserStopReason: string | null = null;
 
@@ -29,7 +29,7 @@ class VapiClientService {
   private activeServiceArea: ServiceArea | null = null;
 
   /**
-   * Preloads/pre-initializes the Vapi Web SDK singleton in background.
+   * Preloads/pre-initializes the Vapi Web SDK singleton instance.
    */
   preload(): void {
     if (typeof window === "undefined") return;
@@ -37,7 +37,7 @@ class VapiClientService {
       const publicKey = getVapiPublicKey();
       if (publicKey && (!this.vapiInstance || this.currentPublicKey !== publicKey)) {
         if (process.env.NODE_ENV === "development") {
-          console.log(`[SAAJ VAPI] [${performance.now().toFixed(2)}ms] Preloading Vapi Web SDK singleton in background...`);
+          console.log(`[SAAJ VAPI] [${performance.now().toFixed(2)}ms] Preloading Vapi Web SDK singleton instance...`);
         }
         this.getVapiInstance(publicKey);
       }
@@ -49,13 +49,12 @@ class VapiClientService {
   }
 
   /**
-   * Retrieves or instantiates the Vapi Web SDK client.
-   * NEVER calls .stop() on an existing idle instance to prevent sending accidental hang-ups.
+   * Retrieves or instantiates the stable singleton Vapi client.
    */
   private getVapiInstance(publicKey: string): Vapi {
     if (!this.vapiInstance || this.currentPublicKey !== publicKey) {
       if (process.env.NODE_ENV === "development") {
-        console.log(`[SAAJ VAPI] [${performance.now().toFixed(2)}ms] Creating new Vapi Web SDK instance`);
+        console.log(`[SAAJ VAPI] [${performance.now().toFixed(2)}ms] Instantiating singleton Vapi client`);
       }
       this.vapiInstance = new Vapi(publicKey);
       this.currentPublicKey = publicKey;
@@ -66,7 +65,7 @@ class VapiClientService {
       this.attachListeners(this.vapiInstance);
       this.listenersAttached = true;
       if (process.env.NODE_ENV === "development") {
-        console.log(`[SAAJ VAPI] [${performance.now().toFixed(2)}ms] listeners attached`);
+        console.log(`[SAAJ VAPI] [${performance.now().toFixed(2)}ms] Vapi event listeners attached`);
       }
     }
 
@@ -81,8 +80,8 @@ class VapiClientService {
       return;
     }
 
-    if (newStatus === "connected") {
-      this.wasEverConnected = true;
+    if (newStatus === "active") {
+      this.wasEverActive = true;
     }
 
     const allowed = this.isValidTransition(this.currentCallStatus, newStatus);
@@ -101,7 +100,8 @@ class VapiClientService {
 
   private isValidTransition(from: VapiCallStatus, to: VapiCallStatus): boolean {
     if (from === to) return true;
-    if ((from === "ended" || from === "failed" || from === "ending") && (to === "connected" || to === "connecting")) {
+    // Terminal states cannot transition back to active or starting
+    if ((from === "ended" || from === "error" || from === "ending") && (to === "active" || to === "starting")) {
       return false;
     }
     return true;
@@ -115,10 +115,10 @@ class VapiClientService {
       const totalToConnected = Math.round(this.t3_callStart - this.t0_ctaClick);
 
       if (process.env.NODE_ENV === "development") {
-        console.log(`[SAAJ VAPI] [${this.t3_callStart.toFixed(2)}ms] EVENT: call-start received in ${totalToConnected}ms (vapi.start -> call-start: ${startToCallStart}ms) [Session #${activeSession}]`);
+        console.log(`[SAAJ VAPI] [${this.t3_callStart.toFixed(2)}ms] CALL START (connected in ${totalToConnected}ms) [Session #${activeSession}]`);
       }
 
-      this.updateStatus("connected", activeSession);
+      this.updateStatus("active", activeSession);
     });
 
     vapi.on("speech-start", () => {
@@ -156,13 +156,13 @@ class VapiClientService {
       const endedReason = this.lastEndedReason || "call-ended";
 
       if (process.env.NODE_ENV === "development") {
-        console.log(`[SAAJ VAPI] [${nowMs.toFixed(2)}ms] EVENT: call-end received. endedReason: "${endedReason}", wasConnected: ${this.wasEverConnected} [Session #${activeSession}]`);
+        console.log(`[SAAJ VAPI] [${nowMs.toFixed(2)}ms] CALL END. endedReason: "${endedReason}", wasEverActive: ${this.wasEverActive} [Session #${activeSession}]`);
       }
 
-      if (!this.wasEverConnected) {
-        this.updateStatus("failed", activeSession);
+      if (!this.wasEverActive) {
+        // If call never connected, transition to error state
+        this.updateStatus("error", activeSession);
         if (this.errorCallback && activeSession === this.currentSessionId) {
-          // If endedReason was user-hung-up but no frontend user action was clicked, hide user-hung-up phrasing
           const isUserExplicitStop = !!this.lastExplicitUserStopReason;
           const userFacingReason =
             endedReason === "user-hung-up" && !isUserExplicitStop
@@ -200,10 +200,10 @@ class VapiClientService {
       }
 
       if (process.env.NODE_ENV === "development") {
-        console.error(`[SAAJ VAPI] [${performance.now().toFixed(2)}ms] EVENT: error detail [Session #${activeSession}]:`, errorMsg, e);
+        console.error(`[SAAJ VAPI] [${performance.now().toFixed(2)}ms] ERROR detail [Session #${activeSession}]:`, errorMsg);
       }
 
-      this.updateStatus("failed", activeSession);
+      this.updateStatus("error", activeSession);
 
       if (this.errorCallback && activeSession === this.currentSessionId) {
         const isMicError =
@@ -254,8 +254,8 @@ Total: ${total}ms`);
     onVolumeLevel,
   }: StartCallParams): Promise<Vapi | null> {
     const sessionId = ++this.currentSessionId;
-    this.currentCallStatus = "preparing";
-    this.wasEverConnected = false;
+    this.currentCallStatus = "starting";
+    this.wasEverActive = false;
     this.lastEndedReason = null;
     this.lastExplicitUserStopReason = null;
 
@@ -273,16 +273,16 @@ Total: ${total}ms`);
     this.volumeCallback = onVolumeLevel || null;
 
     if (process.env.NODE_ENV === "development") {
-      console.log(`[SAAJ VAPI] [${this.t0_ctaClick.toFixed(2)}ms] Ligar clicked: assistant="${assistant}", serviceArea="${serviceArea}" [Session #${sessionId}]`);
+      console.log(`[SAAJ VAPI] [${this.t0_ctaClick.toFixed(2)}ms] START REQUESTED: assistant="${assistant}", serviceArea="${serviceArea}" [Session #${sessionId}]`);
     }
 
-    this.updateStatus("preparing", sessionId);
+    this.updateStatus("starting", sessionId);
 
     if (serviceArea === "geral") {
       const err = "Chamadas de voz não estão disponíveis para a localização Geral.";
       if (sessionId === this.currentSessionId) {
         onError(err);
-        this.updateStatus("failed", sessionId);
+        this.updateStatus("error", sessionId);
       }
       return null;
     }
@@ -297,7 +297,7 @@ Total: ${total}ms`);
       }
       if (sessionId === this.currentSessionId) {
         onError(err);
-        this.updateStatus("failed", sessionId);
+        this.updateStatus("error", sessionId);
       }
       return null;
     }
@@ -309,7 +309,7 @@ Total: ${total}ms`);
       }
       if (sessionId === this.currentSessionId) {
         onError(err);
-        this.updateStatus("failed", sessionId);
+        this.updateStatus("error", sessionId);
       }
       return null;
     }
@@ -320,7 +320,6 @@ Total: ${total}ms`);
       console.log(`[SAAJ VAPI] [${this.t1_clientReady.toFixed(2)}ms] Vapi client ready [Session #${sessionId}]`);
     }
 
-    this.updateStatus("connecting", sessionId);
     this.t2_startInvoked = performance.now();
 
     try {
@@ -360,7 +359,7 @@ Total: ${total}ms`);
       if (process.env.NODE_ENV === "development") {
         console.error(`[SAAJ VAPI] vapi.start() rejected [Session #${sessionId}]:`, err);
       }
-      this.updateStatus("failed", sessionId);
+      this.updateStatus("error", sessionId);
 
       const isPermissionDenied =
         err?.name === "NotAllowedError" ||
@@ -378,7 +377,7 @@ Total: ${total}ms`);
   }
 
   /**
-   * One explicit stop function. Call termination happens ONLY because of an explicit SAAJ user action.
+   * Canonical stop function. Invoked strictly by explicit user actions.
    */
   stopVoiceCall(reason: string): void {
     const validUserReasons = [
@@ -398,13 +397,13 @@ Total: ${total}ms`);
     const activeSession = this.currentSessionId;
     this.currentSessionId++;
     const prevStatus = this.currentCallStatus;
-    this.currentCallStatus = "ended";
+    this.currentCallStatus = "ending";
     this.lastExplicitUserStopReason = reason;
 
     if (process.env.NODE_ENV === "development") {
       const nowMs = performance.now();
       console.trace(`[SAAJ VAPI] [${nowMs.toFixed(2)}ms] vapi.stop() INVOKED`);
-      console.log(`[SAAJ VAPI] [${nowMs.toFixed(2)}ms] EXPLICIT STOP: reason="${reason}" [Previous Session #${activeSession}, Previous Status: "${prevStatus}"] -> New Guard Session: #${this.currentSessionId}`);
+      console.log(`[SAAJ VAPI] [${nowMs.toFixed(2)}ms] STOP REQUESTED: reason="${reason}", callState="${prevStatus}", assistant="${this.activeAssistant}" [Previous Session #${activeSession}] -> New Session: #${this.currentSessionId}`);
     }
 
     if (this.vapiInstance) {
@@ -418,7 +417,7 @@ Total: ${total}ms`);
     }
 
     if (this.statusCallback) {
-      this.statusCallback("ended");
+      this.statusCallback("ending");
     }
 
     this.statusCallback = null;

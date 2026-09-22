@@ -23,7 +23,7 @@ export const VoiceCallModal: React.FC<VoiceCallModalProps> = ({
   onQuickExit,
 }) => {
   const assistant = getAssistant(assistantId);
-  const [callStatus, setCallStatus] = useState<VapiCallStatus>("preparing");
+  const [callStatus, setCallStatus] = useState<VapiCallStatus>("starting");
   const [isMuted, setIsMuted] = useState(false);
   const [durationSeconds, setDurationSeconds] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -58,9 +58,9 @@ export const VoiceCallModal: React.FC<VoiceCallModalProps> = ({
       serviceArea,
       onStatusChange: (status) => {
         setCallStatus(status);
-        if (status === "connected") {
+        if (status === "active") {
           startTimer();
-        } else if (status === "ended" || status === "failed") {
+        } else if (status === "ended" || status === "error") {
           cleanupTimer();
         }
       },
@@ -83,27 +83,27 @@ export const VoiceCallModal: React.FC<VoiceCallModalProps> = ({
   }, [assistantId, serviceArea]);
 
   const handleEndCall = () => {
+    if (callStatus === "ending" || callStatus === "ended") return;
     setCallStatus("ending");
     vapiClient.stopVoiceCall("user-pressed-hangup");
     cleanupTimer();
-    setCallStatus("ended");
     setTimeout(() => {
       onClose();
-    }, 200);
+    }, 250);
   };
 
   const handleBack = () => {
-    setCallStatus("ending");
-    vapiClient.stopVoiceCall("user-pressed-back");
+    if (callStatus === "active" || callStatus === "starting") {
+      vapiClient.stopVoiceCall("user-pressed-back");
+    }
     cleanupTimer();
-    setCallStatus("ended");
-    setTimeout(() => {
-      onClose();
-    }, 200);
+    onClose();
   };
 
   const handleQuickExit = () => {
-    vapiClient.stopVoiceCall("user-pressed-quick-exit");
+    if (callStatus === "active" || callStatus === "starting") {
+      vapiClient.stopVoiceCall("user-pressed-quick-exit");
+    }
     cleanupTimer();
     if (onQuickExit) {
       onQuickExit();
@@ -151,37 +151,25 @@ export const VoiceCallModal: React.FC<VoiceCallModalProps> = ({
           <AssistantAvatar
             assistantId={assistantId}
             size="xl"
-            showAura={callStatus === "connected"}
+            showAura={callStatus === "active"}
           />
         </div>
 
         <h2 className="text-2xl font-extrabold tracking-tight">{assistant.name}</h2>
         <p className="text-xs text-slate-400 mt-1 font-semibold">{assistant.role}</p>
 
-        {/* Dynamic Status Display */}
+        {/* Dynamic Status Display (Exact strings specified in Section 14) */}
         <div className="mt-6 w-full flex flex-col items-center min-h-[4rem]">
-          {(callStatus === "preparing" || callStatus === "idle") && (
-            <span className="text-xs text-slate-400 animate-pulse font-semibold">
-              A preparar chamada...
-            </span>
-          )}
-
-          {callStatus === "requesting_permission" && (
-            <span className="text-xs text-amber-400 animate-pulse font-semibold">
-              A solicitar acesso ao microfone...
-            </span>
-          )}
-
-          {callStatus === "connecting" && (
+          {(callStatus === "starting" || callStatus === "idle") && (
             <span className="text-xs text-blue-400 animate-pulse font-semibold">
-              A ligar a {assistant.name}...
+              A iniciar chamada...
             </span>
           )}
 
-          {callStatus === "connected" && (
+          {callStatus === "active" && (
             <div className="flex flex-col items-center">
               <span className="text-xs text-emerald-400 font-bold mb-1 tracking-wider uppercase">
-                Em chamada
+                Chamada em curso
               </span>
               <span className="font-mono text-2xl font-bold tracking-wider text-slate-100">
                 {formatDuration(durationSeconds)}
@@ -190,21 +178,25 @@ export const VoiceCallModal: React.FC<VoiceCallModalProps> = ({
           )}
 
           {callStatus === "ending" && (
-            <span className="text-xs text-slate-400">A terminar chamada...</span>
+            <span className="text-xs text-slate-400 animate-pulse">
+              A terminar chamada...
+            </span>
           )}
 
           {callStatus === "ended" && (
-            <span className="text-xs text-slate-400">Chamada terminada</span>
+            <span className="text-xs text-slate-400 font-semibold">
+              Chamada terminada
+            </span>
           )}
 
-          {callStatus === "failed" && (
+          {callStatus === "error" && (
             <div className="w-full flex flex-col items-center space-y-3">
               <div className="flex items-center gap-2 text-xs text-red-300 bg-red-950/70 p-3.5 rounded-2xl border border-red-800/60 text-left w-full">
                 <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
                 <span>{errorMessage || "Não foi possível iniciar a chamada."}</span>
               </div>
 
-              {/* Recoverable Actions when permission is denied or connection fails */}
+              {/* Recoverable Actions when call fails */}
               <div className="flex items-center gap-3 w-full pt-1">
                 <button
                   onClick={() => {
@@ -230,12 +222,12 @@ export const VoiceCallModal: React.FC<VoiceCallModalProps> = ({
       </div>
 
       {/* Control Buttons Footer */}
-      {callStatus !== "failed" && (
+      {callStatus !== "error" && (
         <div className="flex items-center justify-center gap-6 pb-6">
           {/* Mute button */}
           <button
             onClick={toggleMute}
-            disabled={callStatus !== "connected"}
+            disabled={callStatus !== "active"}
             className={`p-4 rounded-full transition-all active-press ${
               isMuted
                 ? "bg-amber-500/20 text-amber-400 border border-amber-500/40"
@@ -249,7 +241,8 @@ export const VoiceCallModal: React.FC<VoiceCallModalProps> = ({
           {/* End Call button */}
           <button
             onClick={handleEndCall}
-            className="p-5 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-lg active-press transition-all"
+            disabled={callStatus === "ending" || callStatus === "ended"}
+            className="p-5 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-lg active-press transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             title="Desligar Chamada"
           >
             <PhoneOff className="w-7 h-7" />
