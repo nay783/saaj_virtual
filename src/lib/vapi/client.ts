@@ -191,10 +191,16 @@ class VapiClientService {
         (typeof e === "string" ? e : null) ||
         (e && Object.keys(e).length > 0 ? JSON.stringify(e) : String(e));
 
-      // Ignore internal Daily observer cleanup exception when tearing down previous calls
-      if (errorMsg.includes("startRemoteParticipantsAudioLevelObserver")) {
+      // Ignore internal Daily observer cleanup & ejection messages when tearing down calls
+      const isDailyTeardown =
+        errorMsg.includes("startRemoteParticipantsAudioLevelObserver") ||
+        errorMsg.includes("Meeting ended due to ejection") ||
+        errorMsg.includes("Meeting has ended") ||
+        errorMsg.includes("ejection");
+
+      if (isDailyTeardown || this.currentCallStatus === "ending" || this.currentCallStatus === "ended") {
         if (process.env.NODE_ENV === "development") {
-          console.warn(`[SAAJ VAPI] Suppressed internal Daily observer cleanup error [Session #${activeSession}]`);
+          console.warn(`[SAAJ VAPI] Suppressed internal Daily teardown message [Session #${activeSession}]: "${errorMsg}"`);
         }
         return;
       }
@@ -349,7 +355,12 @@ Total: ${total}ms`);
       if (sessionId !== this.currentSessionId) return null;
 
       const errorMsg = err?.message || String(err);
-      if (errorMsg.includes("startRemoteParticipantsAudioLevelObserver")) {
+      if (
+        errorMsg.includes("startRemoteParticipantsAudioLevelObserver") ||
+        errorMsg.includes("Meeting ended due to ejection") ||
+        errorMsg.includes("Meeting has ended") ||
+        errorMsg.includes("ejection")
+      ) {
         if (process.env.NODE_ENV === "development") {
           console.warn(`[SAAJ VAPI] Suppressed internal Daily start exception [Session #${sessionId}]`);
         }
