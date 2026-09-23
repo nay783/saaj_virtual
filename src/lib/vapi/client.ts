@@ -50,13 +50,19 @@ class VapiClientService {
 
   /**
    * Retrieves or instantiates the stable singleton Vapi client.
+   * Configures explicit microphone permissions & audio source options for Daily.co WebRTC transport.
    */
   private getVapiInstance(publicKey: string): Vapi {
     if (!this.vapiInstance || this.currentPublicKey !== publicKey) {
       if (process.env.NODE_ENV === "development") {
         console.log(`[SAAJ VAPI] [${performance.now().toFixed(2)}ms] Instantiating singleton Vapi client`);
       }
-      this.vapiInstance = new Vapi(publicKey);
+      this.vapiInstance = new Vapi(
+        publicKey,
+        undefined,
+        { alwaysIncludeMicInPermissionPrompt: true },
+        { audioSource: true, startAudioOff: false }
+      );
       this.currentPublicKey = publicKey;
       this.listenersAttached = false;
     }
@@ -107,6 +113,155 @@ class VapiClientService {
     return true;
   }
 
+  /**
+   * Pre-flight microphone permission and hardware check without creating competing stream objects.
+   */
+  private async checkMicrophonePermission(): Promise<{ allowed: boolean; reason?: string }> {
+    if (typeof window === "undefined") return { allowed: true };
+
+    if (!navigator?.mediaDevices) {
+      return { allowed: false, reason: "O teu navegador não suporta chamadas de áudio." };
+    }
+
+    try {
+      if (navigator.permissions && typeof navigator.permissions.query === "function") {
+        const perm = await navigator.permissions.query({ name: "microphone" as PermissionName });
+        if (perm && perm.state === "denied") {
+          return { allowed: false, reason: "Não foi possível aceder ao microfone." };
+        }
+      }
+    } catch {
+      // Permission API query for 'microphone' is unsupported on older Safari/iOS versions, ignore
+    }
+
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const audioInputs = devices.filter((d) => d.kind === "audioinput");
+      if (devices.length > 0 && audioInputs.length === 0) {
+        return { allowed: false, reason: "Nenhum microfone encontrado no dispositivo." };
+      }
+    } catch {
+      // Ignore device enumeration errors
+    }
+
+    return { allowed: true };
+  }
+
+  /**
+   * Privacy-safe technical diagnostic logging after call start.
+   * NEVER logs audio, transcripts, or personal identifiable information.
+   */
+  private async runPrivacySafeDiagnostics(vapi: Vapi, activeSession: number): Promise<void> {
+    if (typeof window === "undefined") return;
+
+    let permState = "unknown";
+    try {
+      if (navigator.permissions && typeof navigator.permissions.query === "function") {
+        const perm = await navigator.permissions.query({ name: "microphone" as PermissionName });
+        permState = perm?.state || "unknown";
+      }
+    } catch {
+      permState = "unsupported-query";
+    }
+
+    let audioDeviceCount = 0;
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      audioDeviceCount = devices.filter((d) => d.kind === "audioinput").length;
+    } catch {
+      audioDeviceCount = -1;
+    }
+
+    let isMuted = false;
+    try {
+      isMuted = vapi.isMuted();
+    } catch {
+      isMuted = false;
+    }
+
+    const dailyCall = (vapi as any)?.call || (vapi as any)?.dailyCallObject;
+    const localParticipant = dailyCall?.participants?.()?.local;
+    const audioTrackState = localParticipant?.tracks?.audio;
+    const track: MediaStreamTrack | null = audioTrackState?.track || null;
+
+    if (process.env.NODE_ENV === "development") {
+      console.log(`[SAAJ VAPI DIAGNOSTIC] Technical Call-Start Summary [Session #${activeSession}]:
+- Permission State: ${permState}
+- Audio Input Devices Found: ${audioDeviceCount}
+- Vapi isMuted: ${isMuted}
+- Daily Audio State: ${audioTrackState?.state || "unknown"}
+- MediaStreamTrack Present: ${!!track}
+- Track readyState: ${track?.readyState || "N/A"}
+- Track enabled: ${track?.enabled ?? "N/A"}
+- Track muted: ${track?.muted ?? "N/A"}`);
+    }
+
+    this.monitorAudioTrack(vapi, activeSession);
+  }
+
+  /**
+   * Monitors active MediaStreamTrack state transitions (readyState, enabled, muted)
+   * and remediates iOS Safari audio routing mutes automatically.
+   */
+  private monitorAudioTrack(vapi: Vapi, activeSession: number): void {
+    try {
+      const dailyCall = (vapi as any)?.call || (vapi as any)?.dailyCallObject;
+      const localParticipant = dailyCall?.participants?.()?.local;
+      const audioTrackState = localParticipant?.tracks?.audio;
+
+      if (audioTrackState?.state === "blocked") {
+        const blockedReason = audioTrackState?.blocked?.reason || "permissions";
+        if (process.env.NODE_ENV === "development") {
+          console.warn(`[SAAJ VAPI DIAGNOSTIC] Session #${activeSession}: Daily microphone track BLOCKED (reason: "${blockedReason}")`);
+        }
+        if (activeSession === this.currentSessionId) {
+          this.updateStatus("error", activeSession);
+          if (this.errorCallback) {
+            this.errorCallback("Não foi possível aceder ao microfone.");
+          }
+        }
+        return;
+      }
+
+      const track: MediaStreamTrack | null = audioTrackState?.track || null;
+      if (!track) return;
+
+      // Attach event handlers to track state changes
+      track.onmute = () => {
+        if (process.env.NODE_ENV === "development") {
+          console.warn(`[SAAJ VAPI DIAGNOSTIC] Session #${activeSession}: MediaStreamTrack CHANGED -> muted=true (readyState=${track.readyState}, enabled=${track.enabled})`);
+        }
+        // iOS Safari remediation: when Safari sets muted=true on audio route change, re-enable/unmute
+        try {
+          if (this.vapiInstance && activeSession === this.currentSessionId) {
+            this.vapiInstance.setMuted(false);
+            if (dailyCall && typeof dailyCall.setLocalAudio === "function") {
+              dailyCall.setLocalAudio(true);
+            }
+          }
+        } catch {
+          // quiet catch
+        }
+      };
+
+      track.onunmute = () => {
+        if (process.env.NODE_ENV === "development") {
+          console.log(`[SAAJ VAPI DIAGNOSTIC] Session #${activeSession}: MediaStreamTrack CHANGED -> muted=false (readyState=${track.readyState}, enabled=${track.enabled})`);
+        }
+      };
+
+      track.onended = () => {
+        if (process.env.NODE_ENV === "development") {
+          console.warn(`[SAAJ VAPI DIAGNOSTIC] Session #${activeSession}: MediaStreamTrack CHANGED -> readyState=ended (enabled=${track.enabled}, muted=${track.muted})`);
+        }
+      };
+    } catch (e) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn(`[SAAJ VAPI DIAGNOSTIC] Session #${activeSession}: Track monitor error:`, e);
+      }
+    }
+  }
+
   private attachListeners(vapi: Vapi): void {
     vapi.on("call-start", () => {
       const activeSession = this.currentSessionId;
@@ -118,6 +273,16 @@ class VapiClientService {
         console.log(`[SAAJ VAPI] [${this.t3_callStart.toFixed(2)}ms] CALL START (connected in ${totalToConnected}ms) [Session #${activeSession}]`);
       }
 
+      // Ensure local microphone starts unmuted
+      try {
+        vapi.setMuted(false);
+      } catch {
+        // quiet catch
+      }
+
+      // Run privacy-safe diagnostics & track state monitoring
+      this.runPrivacySafeDiagnostics(vapi, activeSession);
+
       this.updateStatus("active", activeSession);
     });
 
@@ -127,6 +292,8 @@ class VapiClientService {
         this.firstResponseCaptured = true;
         this.logFullPerformanceMetrics();
       }
+      // Re-verify track status when assistant begins speaking
+      this.monitorAudioTrack(vapi, this.currentSessionId);
     });
 
     vapi.on("message", (msg: any) => {
@@ -159,6 +326,19 @@ class VapiClientService {
         console.log(`[SAAJ VAPI] [${nowMs.toFixed(2)}ms] CALL END. endedReason: "${endedReason}", wasEverActive: ${this.wasEverActive} [Session #${activeSession}]`);
       }
 
+      const isMicPermissionErrorReason =
+        endedReason === "customer-did-not-give-microphone-permission" ||
+        endedReason === "call.in-progress.error-assistant-did-not-receive-customer-audio" ||
+        endedReason === "call.in-progress.error-warm-transfer-microphone-timeout";
+
+      if (isMicPermissionErrorReason) {
+        this.updateStatus("error", activeSession);
+        if (this.errorCallback && activeSession === this.currentSessionId) {
+          this.errorCallback("Não foi possível aceder ao microfone.");
+        }
+        return;
+      }
+
       if (!this.wasEverActive) {
         // If call never connected, transition to error state
         this.updateStatus("error", activeSession);
@@ -167,6 +347,8 @@ class VapiClientService {
           const userFacingReason =
             endedReason === "user-hung-up" && !isUserExplicitStop
               ? "Não foi possível iniciar a chamada."
+              : endedReason === "silence-timed-out" || endedReason === "silence"
+              ? "Não foi possível aceder ao microfone."
               : `Não foi possível iniciar a chamada (${endedReason}).`;
 
           this.errorCallback(userFacingReason);
@@ -215,6 +397,7 @@ class VapiClientService {
         const isMicError =
           e?.name === "NotAllowedError" ||
           e?.name === "NotFoundError" ||
+          e?.name === "PermissionDeniedError" ||
           String(errorMsg).toLowerCase().includes("mic") ||
           String(errorMsg).toLowerCase().includes("permission") ||
           String(errorMsg).toLowerCase().includes("notallowederror");
@@ -320,6 +503,19 @@ Total: ${total}ms`);
       return null;
     }
 
+    // Pre-flight microphone permission and hardware check
+    const micCheck = await this.checkMicrophonePermission();
+    if (!micCheck.allowed) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn(`[SAAJ VAPI DIAGNOSTIC] Pre-flight microphone check failed [Session #${sessionId}]: ${micCheck.reason}`);
+      }
+      if (sessionId === this.currentSessionId) {
+        onError(micCheck.reason || "Não foi possível aceder ao microfone.");
+        this.updateStatus("error", sessionId);
+      }
+      return null;
+    }
+
     const vapi = this.getVapiInstance(publicKey);
     this.t1_clientReady = performance.now();
     if (process.env.NODE_ENV === "development") {
@@ -374,13 +570,14 @@ Total: ${total}ms`);
 
       const isPermissionDenied =
         err?.name === "NotAllowedError" ||
+        err?.name === "PermissionDeniedError" ||
         err?.message?.toLowerCase().includes("permission") ||
         err?.message?.toLowerCase().includes("microphone") ||
         err?.message?.toLowerCase().includes("notallowederror");
 
       onError(
         isPermissionDenied
-          ? "Precisamos de acesso ao microfone para fazer a chamada."
+          ? "Não foi possível aceder ao microfone."
           : "Não foi possível iniciar a chamada. Verifica a tua ligação."
       );
       return null;
