@@ -54,7 +54,7 @@ export const ContactProfile: React.FC<ContactProfileProps> = ({
         )}
 
         <div className="flex items-center gap-1.5 px-3 py-1 rounded-full glass-card text-xs font-medium text-slate-700 shadow-2xs border border-slate-900/[0.06]">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
           <span>Atendimento Privado SAAJ</span>
         </div>
 
@@ -112,7 +112,7 @@ export const ContactProfile: React.FC<ContactProfileProps> = ({
                         : "bg-manuela-50 text-manuela-600 group-hover:bg-manuela-600 group-hover:text-white border border-manuela-100"
                     }`}
                   >
-                    <MessageSquare className="w-5 h-5" />
+                    <MessageSquare className="w-5 h-5 shrink-0" />
                   </div>
                   <span className="font-semibold text-slate-900 text-xs">Mensagem</span>
                 </button>
@@ -131,7 +131,7 @@ export const ContactProfile: React.FC<ContactProfileProps> = ({
                         : "bg-manuela-50 text-manuela-600 group-hover:bg-manuela-600 group-hover:text-white border border-manuela-100"
                     }`}
                   >
-                    <PhoneCall className="w-5 h-5" />
+                    <PhoneCall className="w-5 h-5 shrink-0" />
                   </div>
                   <span className="font-semibold text-slate-900 text-xs">Ligar</span>
                 </button>
@@ -152,7 +152,7 @@ export const ContactProfile: React.FC<ContactProfileProps> = ({
                         : "bg-manuela-50 text-manuela-600 group-hover:bg-manuela-600 group-hover:text-white border border-manuela-100"
                     }`}
                   >
-                    <MessageSquare className="w-5 h-5" />
+                    <MessageSquare className="w-5 h-5 shrink-0" />
                   </div>
                   <span className="font-semibold text-slate-900 text-sm">Mensagem</span>
                 </button>
@@ -160,10 +160,10 @@ export const ContactProfile: React.FC<ContactProfileProps> = ({
             )}
           </div>
 
-          {/* Supporting Information Surface */}
-          <div className="glass-card rounded-3xl p-4.5 text-xs text-slate-600 space-y-2 border border-slate-900/[0.06]">
-            <div className="flex items-center gap-2 font-semibold text-slate-900 text-xs">
-              <Info className="w-4 h-4 text-slate-500" />
+          {/* Supporting Information Surface (Strictly contained heading row & description) */}
+          <div className="glass-card rounded-3xl p-5 border border-slate-900/[0.06] shadow-soft">
+            <div className="flex items-center gap-2 font-semibold text-slate-900 text-xs mb-2.5">
+              <Info className="w-4 h-4 text-slate-500 shrink-0" />
               <span>Sobre o atendimento</span>
             </div>
             <p className="leading-relaxed text-[11px] text-slate-500 font-normal">

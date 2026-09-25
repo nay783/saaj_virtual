@@ -58,15 +58,16 @@ export const Splash: React.FC<SplashProps> = ({
     >
       <div className="relative flex items-center justify-center">
         {/* Soft background ambient halo */}
-        <div className="absolute w-48 h-48 rounded-full bg-blue-400/15 blur-2xl -z-10" />
+        <div className="absolute w-56 h-56 rounded-full bg-blue-500/10 blur-3xl -z-10" />
 
-        <div className="relative w-56 h-56 max-w-[70vw] max-h-[70vw] flex items-center justify-center p-3 rounded-3xl bg-white/80 backdrop-blur-md border border-slate-900/[0.06] shadow-soft">
+        {/* Clean floating brand mark - No boxed frame/card/border/shadow */}
+        <div className="relative w-64 h-64 max-w-[75vw] max-h-[75vw] flex items-center justify-center">
           <Image
             src="/splash/splash_screen.png"
             alt="SAAJ Virtual Logo"
             fill
             priority
-            className="object-contain p-4"
+            className="object-contain"
           />
         </div>
       </div>
