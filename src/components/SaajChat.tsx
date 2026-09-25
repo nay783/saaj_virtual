@@ -26,7 +26,7 @@ export const SaajChat: React.FC<SaajChatProps> = ({
   return (
     <div className="flex flex-col h-screen-dvh bg-slate-50 safe-top safe-bottom overflow-hidden z-40 relative">
       {/* Minimal SAAJ Safety Shell Header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-2xs shrink-0 z-20 max-w-4xl mx-auto w-full">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-white/90 backdrop-blur-md border-b border-slate-900/[0.06] shadow-2xs shrink-0 z-20 max-w-xl mx-auto w-full">
         {onBack ? (
           <button
             onClick={onBack}
@@ -43,7 +43,7 @@ export const SaajChat: React.FC<SaajChatProps> = ({
       </div>
 
       {/* ConvoCore User-Facing Chat Engine */}
-      <div className="flex-1 w-full min-h-0 relative overflow-hidden flex flex-col max-w-4xl mx-auto">
+      <div className="flex-1 w-full min-h-0 relative overflow-hidden flex flex-col max-w-xl mx-auto">
         <ConvoCoreChat
           assistant={assistantId}
           serviceArea={serviceArea}

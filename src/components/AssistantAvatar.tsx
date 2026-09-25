@@ -18,7 +18,6 @@ export const AssistantAvatar: React.FC<AssistantAvatarProps> = ({
   className = "",
 }) => {
   const isTonito = assistantId === "tonito";
-  const assistant = ASSISTANTS[assistantId];
 
   const sizeClasses = {
     sm: "w-9 h-9 text-xs",
@@ -39,20 +38,20 @@ export const AssistantAvatar: React.FC<AssistantAvatarProps> = ({
       {/* Soft atmospheric aura background */}
       {showAura && (
         <div
-          className={`absolute rounded-full blur-xl opacity-60 transition-all ${
+          className={`absolute rounded-full blur-xl opacity-50 transition-all ${
             auraSizes[size]
-          } ${isTonito ? "bg-tonito-500/30" : "bg-manuela-500/30"}`}
+          } ${isTonito ? "bg-tonito-500/25" : "bg-manuela-500/25"}`}
         />
       )}
 
       {/* Styled Assistant Portrait Avatar Badge */}
       <div
-        className={`relative z-10 rounded-full flex items-center justify-center font-bold tracking-tight shadow-md transition-transform ${
+        className={`relative z-10 rounded-full flex items-center justify-center font-semibold tracking-tight shadow-soft transition-transform ${
           sizeClasses[size]
         } ${
           isTonito
-            ? "bg-gradient-to-tr from-tonito-600 via-tonito-500 to-blue-400 text-white border-2 border-white/80 shadow-glow-blue"
-            : "bg-gradient-to-tr from-manuela-600 via-manuela-500 to-rose-400 text-white border-2 border-white/80 shadow-glow-pink"
+            ? "bg-gradient-to-tr from-tonito-700 via-tonito-600 to-blue-400 text-white border-2 border-white shadow-glow-blue"
+            : "bg-gradient-to-tr from-manuela-700 via-manuela-600 to-rose-400 text-white border-2 border-white shadow-glow-pink"
         }`}
       >
         <svg

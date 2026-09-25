@@ -16,19 +16,19 @@ export const ConversasView: React.FC<ConversasViewProps> = ({
   return (
     <div className="min-h-screen-dvh flex flex-col bg-ambient-neutral pb-28 safe-top">
       {/* Top Header */}
-      <div className="px-4 py-4 max-w-md mx-auto w-full">
-        <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Conversas</h1>
-        <p className="text-xs text-slate-600 mt-1 font-medium">
+      <div className="px-4 py-4 max-w-xl mx-auto w-full">
+        <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Conversas</h1>
+        <p className="text-xs text-slate-600 mt-1 font-normal">
           Escolhe com quem queres conversar.
         </p>
       </div>
 
       {/* Assistant Messaging Gateway Cards */}
-      <div className="max-w-md mx-auto w-full px-4 pt-1 space-y-4">
+      <div className="max-w-xl mx-auto w-full px-4 pt-1 space-y-4">
         {/* Tonito Gateway Card */}
         <div
           onClick={() => onStartConversation("tonito")}
-          className="cursor-pointer glass-card p-5 rounded-4xl border border-white/90 shadow-soft hover:shadow-glow-blue transition-all flex flex-col space-y-4 group active-press bg-tonito-50/40"
+          className="cursor-pointer glass-card p-5 rounded-3xl border border-slate-900/[0.06] shadow-soft hover:shadow-glow-blue transition-all flex flex-col space-y-4 group active-press bg-tonito-50/40 hover:-translate-y-0.5"
         >
           <div className="flex items-center gap-4">
             <AssistantAvatar
@@ -38,18 +38,18 @@ export const ConversasView: React.FC<ConversasViewProps> = ({
             />
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
-                <h3 className="font-extrabold text-slate-900 text-lg">
+                <h3 className="font-semibold text-slate-900 text-lg">
                   {ASSISTANTS.tonito.name}
                 </h3>
-                <ArrowRight className="w-5 h-5 text-tonito-500 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-5 h-5 text-tonito-600 group-hover:translate-x-1 transition-transform" />
               </div>
-              <p className="text-xs text-tonito-700 font-bold mt-0.5">
+              <p className="text-xs text-tonito-700 font-semibold mt-0.5">
                 {ASSISTANTS.tonito.role}
               </p>
             </div>
           </div>
 
-          <p className="text-xs text-slate-600 leading-relaxed">
+          <p className="text-xs text-slate-600 leading-relaxed font-normal">
             "{ASSISTANTS.tonito.tagline}"
           </p>
 
@@ -58,7 +58,7 @@ export const ConversasView: React.FC<ConversasViewProps> = ({
               e.stopPropagation();
               onStartConversation("tonito");
             }}
-            className="w-full py-3.5 px-4 rounded-2xl bg-tonito-500 hover:bg-tonito-600 text-white font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-md"
+            className="w-full h-12 px-4 rounded-2xl bg-tonito-600 hover:bg-tonito-700 text-white font-semibold text-xs tracking-tight transition-all flex items-center justify-center gap-2 shadow-md active-press"
           >
             <MessageSquare className="w-4 h-4" />
             <span>Conversar com Tonito</span>
@@ -68,7 +68,7 @@ export const ConversasView: React.FC<ConversasViewProps> = ({
         {/* Manuela Gateway Card */}
         <div
           onClick={() => onStartConversation("manuela")}
-          className="cursor-pointer glass-card p-5 rounded-4xl border border-white/90 shadow-soft hover:shadow-glow-pink transition-all flex flex-col space-y-4 group active-press bg-manuela-50/40"
+          className="cursor-pointer glass-card p-5 rounded-3xl border border-slate-900/[0.06] shadow-soft hover:shadow-glow-pink transition-all flex flex-col space-y-4 group active-press bg-manuela-50/40 hover:-translate-y-0.5"
         >
           <div className="flex items-center gap-4">
             <AssistantAvatar
@@ -78,18 +78,18 @@ export const ConversasView: React.FC<ConversasViewProps> = ({
             />
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
-                <h3 className="font-extrabold text-slate-900 text-lg">
+                <h3 className="font-semibold text-slate-900 text-lg">
                   {ASSISTANTS.manuela.name}
                 </h3>
-                <ArrowRight className="w-5 h-5 text-manuela-500 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-5 h-5 text-manuela-600 group-hover:translate-x-1 transition-transform" />
               </div>
-              <p className="text-xs text-manuela-700 font-bold mt-0.5">
+              <p className="text-xs text-manuela-700 font-semibold mt-0.5">
                 {ASSISTANTS.manuela.role}
               </p>
             </div>
           </div>
 
-          <p className="text-xs text-slate-600 leading-relaxed">
+          <p className="text-xs text-slate-600 leading-relaxed font-normal">
             "{ASSISTANTS.manuela.tagline}"
           </p>
 
@@ -98,7 +98,7 @@ export const ConversasView: React.FC<ConversasViewProps> = ({
               e.stopPropagation();
               onStartConversation("manuela");
             }}
-            className="w-full py-3.5 px-4 rounded-2xl bg-manuela-500 hover:bg-manuela-600 text-white font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-md"
+            className="w-full h-12 px-4 rounded-2xl bg-manuela-600 hover:bg-manuela-700 text-white font-semibold text-xs tracking-tight transition-all flex items-center justify-center gap-2 shadow-md active-press"
           >
             <MessageSquare className="w-4 h-4" />
             <span>Conversar com Manuela</span>
@@ -106,12 +106,12 @@ export const ConversasView: React.FC<ConversasViewProps> = ({
         </div>
 
         {/* Confidentiality Notice Footer */}
-        <div className="glass-card rounded-3xl p-4 text-center text-xs text-slate-500 border border-white/80 space-y-1">
-          <div className="flex items-center justify-center gap-1.5 font-bold text-slate-700 text-xs">
-            <Sparkles className="w-4 h-4 text-purple-500" />
+        <div className="glass-card rounded-3xl p-4 text-center text-xs text-slate-500 border border-slate-900/[0.06] space-y-1">
+          <div className="flex items-center justify-center gap-1.5 font-semibold text-slate-700 text-xs">
+            <Sparkles className="w-4 h-4 text-purple-600" />
             <span>Histórico Seguro & Privado</span>
           </div>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-slate-400 font-normal">
             As tuas conversas são encriptadas e geridas com privacidade total.
           </p>
         </div>

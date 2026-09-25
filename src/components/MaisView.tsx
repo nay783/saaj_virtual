@@ -37,31 +37,31 @@ export const MaisView: React.FC<MaisViewProps> = ({
   return (
     <div className="min-h-screen-dvh flex flex-col bg-ambient-neutral pb-28 safe-top">
       {/* Top Header */}
-      <div className="px-4 py-4 max-w-md mx-auto w-full">
-        <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Mais</h1>
+      <div className="px-4 py-4 max-w-xl mx-auto w-full">
+        <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Mais</h1>
       </div>
 
-      <div className="max-w-md mx-auto w-full px-4 pt-1 space-y-6">
+      <div className="max-w-xl mx-auto w-full px-4 pt-1 space-y-6">
         {/* Localização Group */}
         <div className="space-y-2">
-          <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider px-2">
+          <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2">
             Localização
           </h3>
-          <div className="glass-card rounded-3xl border border-white/90 shadow-soft overflow-hidden">
+          <div className="glass-card rounded-3xl border border-slate-900/[0.06] shadow-soft overflow-hidden">
             <button
               onClick={onChangeLocation}
-              className="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50/60 transition-colors active-press"
+              className="w-full p-4.5 text-left flex items-center justify-between hover:bg-slate-50/70 transition-colors active-press"
             >
               <div className="flex items-center gap-3.5">
-                <div className="p-2.5 rounded-2xl bg-blue-50 text-tonito-600">
+                <div className="p-2.5 rounded-2xl bg-blue-50 text-tonito-600 border border-blue-100">
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-sm">
+                  <h4 className="font-semibold text-slate-900 text-sm">
                     {location.district ? `${location.district}, ${location.province}` : location.province}
                   </h4>
-                  <p className="text-xs text-slate-500">
-                    Área: <span className="font-bold uppercase text-slate-700">{location.serviceArea}</span>
+                  <p className="text-xs text-slate-500 font-normal">
+                    Área: <span className="font-semibold uppercase text-slate-700">{location.serviceArea}</span>
                   </p>
                 </div>
               </div>
@@ -72,21 +72,21 @@ export const MaisView: React.FC<MaisViewProps> = ({
 
         {/* Privacidade e Segurança Group */}
         <div className="space-y-2">
-          <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider px-2">
+          <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2">
             Privacidade e Segurança
           </h3>
-          <div className="glass-card rounded-3xl border border-white/90 shadow-soft divide-y divide-slate-100 overflow-hidden">
+          <div className="glass-card rounded-3xl border border-slate-900/[0.06] shadow-soft divide-y divide-slate-100/80 overflow-hidden">
             <button
               onClick={() => setConfirmClearConversations(true)}
-              className="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50/60 transition-colors active-press"
+              className="w-full p-4.5 text-left flex items-center justify-between hover:bg-slate-50/70 transition-colors active-press"
             >
               <div className="flex items-center gap-3.5">
-                <div className="p-2.5 rounded-2xl bg-amber-50 text-amber-600">
+                <div className="p-2.5 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100">
                   <Trash2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-sm">Limpar conversas</h4>
-                  <p className="text-xs text-slate-500">Apaga o histórico guardado no dispositivo</p>
+                  <h4 className="font-semibold text-slate-900 text-sm">Limpar conversas</h4>
+                  <p className="text-xs text-slate-500 font-normal">Apaga o histórico guardado no dispositivo</p>
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-slate-400" />
@@ -94,15 +94,15 @@ export const MaisView: React.FC<MaisViewProps> = ({
 
             <button
               onClick={() => setConfirmResetDevice(true)}
-              className="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50/60 transition-colors active-press"
+              className="w-full p-4.5 text-left flex items-center justify-between hover:bg-slate-50/70 transition-colors active-press"
             >
               <div className="flex items-center gap-3.5">
-                <div className="p-2.5 rounded-2xl bg-red-50 text-red-600">
+                <div className="p-2.5 rounded-2xl bg-rose-50 text-rose-600 border border-rose-100">
                   <Shield className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-red-600 text-sm">Limpar dados deste dispositivo</h4>
-                  <p className="text-xs text-slate-500">Reinicia as definições locais do dispositivo</p>
+                  <h4 className="font-semibold text-rose-600 text-sm">Limpar dados deste dispositivo</h4>
+                  <p className="text-xs text-slate-500 font-normal">Reinicia as definições locais do dispositivo</p>
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-slate-400" />
@@ -112,45 +112,45 @@ export const MaisView: React.FC<MaisViewProps> = ({
 
         {/* Sobre Group */}
         <div className="space-y-2">
-          <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider px-2">
+          <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2">
             Sobre
           </h3>
-          <div className="glass-card rounded-3xl border border-white/90 shadow-soft divide-y divide-slate-100 overflow-hidden">
+          <div className="glass-card rounded-3xl border border-slate-900/[0.06] shadow-soft divide-y divide-slate-100/80 overflow-hidden">
             <button
               onClick={() => setActiveModal("about")}
-              className="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50/60 transition-colors active-press"
+              className="w-full p-4.5 text-left flex items-center justify-between hover:bg-slate-50/70 transition-colors active-press"
             >
               <div className="flex items-center gap-3.5">
-                <div className="p-2.5 rounded-2xl bg-blue-50 text-blue-600">
+                <div className="p-2.5 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100">
                   <Info className="w-5 h-5" />
                 </div>
-                <span className="font-bold text-slate-900 text-sm">Sobre o SAAJ Virtual</span>
+                <span className="font-semibold text-slate-900 text-sm">Sobre o SAAJ Virtual</span>
               </div>
               <ChevronRight className="w-5 h-5 text-slate-400" />
             </button>
 
             <button
               onClick={() => setActiveModal("help")}
-              className="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50/60 transition-colors active-press"
+              className="w-full p-4.5 text-left flex items-center justify-between hover:bg-slate-50/70 transition-colors active-press"
             >
               <div className="flex items-center gap-3.5">
-                <div className="p-2.5 rounded-2xl bg-purple-50 text-purple-600">
+                <div className="p-2.5 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100">
                   <HelpCircle className="w-5 h-5" />
                 </div>
-                <span className="font-bold text-slate-900 text-sm">Ajuda e apoio</span>
+                <span className="font-semibold text-slate-900 text-sm">Ajuda e apoio</span>
               </div>
               <ChevronRight className="w-5 h-5 text-slate-400" />
             </button>
 
             <button
               onClick={() => setActiveModal("terms")}
-              className="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50/60 transition-colors active-press"
+              className="w-full p-4.5 text-left flex items-center justify-between hover:bg-slate-50/70 transition-colors active-press"
             >
               <div className="flex items-center gap-3.5">
-                <div className="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600">
+                <div className="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100">
                   <FileText className="w-5 h-5" />
                 </div>
-                <span className="font-bold text-slate-900 text-sm">Termos e privacidade</span>
+                <span className="font-semibold text-slate-900 text-sm">Termos e privacidade</span>
               </div>
               <ChevronRight className="w-5 h-5 text-slate-400" />
             </button>
@@ -158,30 +158,30 @@ export const MaisView: React.FC<MaisViewProps> = ({
         </div>
 
         {/* Developer attribution */}
-        <div className="text-center pt-2 text-xs text-slate-400">
-          <p className="font-bold text-slate-600 mb-0.5">SAAJ Virtual V1.0</p>
+        <div className="text-center pt-2 text-xs text-slate-400 font-normal">
+          <p className="font-semibold text-slate-600 mb-0.5">SAAJ Virtual V1.0</p>
           <p>Desenvolvido por NCAI Consultorias e Serviços, EI</p>
         </div>
       </div>
 
       {/* Confirmation Modal: Clear Conversations */}
       {confirmClearConversations && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 safe-top safe-bottom animate-fadeIn">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-4xl p-6 max-w-sm w-full space-y-4 shadow-elevated border border-white/80">
-            <h3 className="text-lg font-extrabold text-slate-900">Limpar Conversas?</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 safe-top safe-bottom animate-fadeIn">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-elevated border border-slate-900/[0.06]">
+            <h3 className="text-lg font-semibold text-slate-900">Limpar Conversas?</h3>
+            <p className="text-xs text-slate-600 leading-relaxed font-normal">
               Esta ação removerá o teu histórico de mensagens locais. As tuas definições de localização e agendamentos não serão afetadas.
             </p>
             <div className="flex items-center gap-3 pt-2">
               <button
                 onClick={() => setConfirmClearConversations(false)}
-                className="flex-1 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold text-xs active-press"
+                className="flex-1 py-3 rounded-xl bg-slate-100 text-slate-700 font-semibold text-xs active-press hover:bg-slate-200 transition-colors"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleClearConversations}
-                className="flex-1 py-3 rounded-2xl bg-amber-600 text-white font-bold text-xs shadow-md active-press"
+                className="flex-1 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs shadow-md active-press transition-colors"
               >
                 Sim, Limpar
               </button>
@@ -192,22 +192,22 @@ export const MaisView: React.FC<MaisViewProps> = ({
 
       {/* Confirmation Modal: Reset Device */}
       {confirmResetDevice && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 safe-top safe-bottom animate-fadeIn">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-4xl p-6 max-w-sm w-full space-y-4 shadow-elevated border border-white/80">
-            <h3 className="text-lg font-extrabold text-red-600">Limpar Todos os Dados?</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 safe-top safe-bottom animate-fadeIn">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-elevated border border-slate-900/[0.06]">
+            <h3 className="text-lg font-semibold text-rose-600">Limpar Todos os Dados?</h3>
+            <p className="text-xs text-slate-600 leading-relaxed font-normal">
               Esta ação reiniciará a aplicação e removerá todos os dados guardados neste dispositivo.
             </p>
             <div className="flex items-center gap-3 pt-2">
               <button
                 onClick={() => setConfirmResetDevice(false)}
-                className="flex-1 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold text-xs active-press"
+                className="flex-1 py-3 rounded-xl bg-slate-100 text-slate-700 font-semibold text-xs active-press hover:bg-slate-200 transition-colors"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleResetDevice}
-                className="flex-1 py-3 rounded-2xl bg-red-600 text-white font-bold text-xs shadow-md active-press"
+                className="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs shadow-md active-press transition-colors"
               >
                 Sim, Reiniciar
               </button>
@@ -218,12 +218,12 @@ export const MaisView: React.FC<MaisViewProps> = ({
 
       {/* Information Sheet Modals */}
       {activeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 safe-top safe-bottom animate-fadeIn">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-4xl p-6 max-w-md w-full space-y-4 shadow-elevated border border-white/80 max-h-[80vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 safe-top safe-bottom animate-fadeIn">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-3xl p-6 max-w-md w-full space-y-4 shadow-elevated border border-slate-900/[0.06] max-h-[80vh] overflow-y-auto">
             {activeModal === "about" && (
               <>
-                <h3 className="text-lg font-extrabold text-slate-900">Sobre o SAAJ Virtual</h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <h3 className="text-lg font-semibold text-slate-900">Sobre o SAAJ Virtual</h3>
+                <p className="text-xs text-slate-600 leading-relaxed font-normal">
                   O SAAJ Virtual é uma plataforma digital desenvolvida para facilitar o acesso dos jovens em Moçambique a informações confiáveis, orientação e serviços de saúde sexual e reprodutiva.
                 </p>
               </>
@@ -231,8 +231,8 @@ export const MaisView: React.FC<MaisViewProps> = ({
 
             {activeModal === "help" && (
               <>
-                <h3 className="text-lg font-extrabold text-slate-900">Ajuda e Apoio</h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <h3 className="text-lg font-semibold text-slate-900">Ajuda e Apoio</h3>
+                <p className="text-xs text-slate-600 leading-relaxed font-normal">
                   Em caso de urgência médica ou necessidade de apoio presencial imediato, dirige-te ao centro de saúde ou unidade SAAJ mais próxima.
                 </p>
               </>
@@ -240,8 +240,8 @@ export const MaisView: React.FC<MaisViewProps> = ({
 
             {activeModal === "terms" && (
               <>
-                <h3 className="text-lg font-extrabold text-slate-900">Termos e Privacidade</h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <h3 className="text-lg font-semibold text-slate-900">Termos e Privacidade</h3>
+                <p className="text-xs text-slate-600 leading-relaxed font-normal">
                   O SAAJ Virtual não exige registo de conta para apoio inicial. A tua privacidade é garantida por omissão.
                 </p>
               </>
@@ -249,7 +249,7 @@ export const MaisView: React.FC<MaisViewProps> = ({
 
             <button
               onClick={() => setActiveModal(null)}
-              className="w-full py-3 rounded-2xl bg-slate-900 text-white font-bold text-xs active-press"
+              className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs active-press transition-colors"
             >
               Fechar
             </button>

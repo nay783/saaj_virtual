@@ -1,5 +1,13 @@
 import type { Metadata, Viewport } from "next";
+import { Manrope } from "next/font/google";
 import "./globals.css";
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-manrope",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "SAAJ Virtual",
@@ -31,11 +39,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt">
+    <html lang="pt" className={manrope.variable}>
       <head>
         <link rel="icon" href="/logo/LOGO_APP.jpg" />
       </head>
-      <body className="bg-saaj-bg text-saaj-text antialiased selection:bg-tonito-200 selection:text-tonito-900">
+      <body className="bg-saaj-canvas text-slate-900 antialiased selection:bg-tonito-100 selection:text-tonito-900 font-sans">
         {children}
       </body>
     </html>

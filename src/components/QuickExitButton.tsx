@@ -27,7 +27,7 @@ export const QuickExitButton: React.FC<QuickExitButtonProps> = ({
     return (
       <button
         onClick={handleExit}
-        className={`p-2 rounded-full bg-red-50 text-red-600 hover:bg-red-100 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 ${className}`}
+        className={`p-2 rounded-full bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors focus:outline-none focus:ring-2 focus:ring-rose-500 border border-rose-200/60 ${className}`}
         title="Saída Rápida"
         aria-label="Saída Rápida"
       >
@@ -39,11 +39,11 @@ export const QuickExitButton: React.FC<QuickExitButtonProps> = ({
   return (
     <button
       onClick={handleExit}
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 active:scale-95 transition-all shadow-sm ${className}`}
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200/80 hover:bg-rose-100 active:scale-[0.985] transition-all shadow-2xs ${className}`}
       title="Fechar imediatamente o aplicativo e ir para um site neutro"
       aria-label="Saída Rápida"
     >
-      <LogOut className="w-3.5 h-3.5 text-red-600" />
+      <LogOut className="w-3.5 h-3.5 text-rose-600" />
       <span>Saída Rápida</span>
     </button>
   );
