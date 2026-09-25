@@ -51,25 +51,20 @@ export const Splash: React.FC<SplashProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-ambient-neutral transition-opacity duration-300 ease-out ${
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white transition-opacity duration-300 ease-out ${
         fadingOut ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
       aria-label="SAAJ Virtual"
     >
-      <div className="relative flex items-center justify-center">
-        {/* Soft background ambient halo */}
-        <div className="absolute w-56 h-56 rounded-full bg-blue-500/10 blur-3xl -z-10" />
-
-        {/* Clean floating brand mark - No boxed frame/card/border/shadow */}
-        <div className="relative w-64 h-64 max-w-[75vw] max-h-[75vw] flex items-center justify-center">
-          <Image
-            src="/splash/splash_screen.png"
-            alt="SAAJ Virtual Logo"
-            fill
-            priority
-            className="object-contain"
-          />
-        </div>
+      {/* Pure white page container allows source logo white background to blend 100% seamlessly */}
+      <div className="relative w-64 h-64 max-w-[75vw] max-h-[75vw] flex items-center justify-center">
+        <Image
+          src="/splash/splash_screen.png"
+          alt="SAAJ Virtual Logo"
+          fill
+          priority
+          className="object-contain"
+        />
       </div>
 
       <div className="mt-8 flex items-center gap-2">
