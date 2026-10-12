@@ -36,7 +36,7 @@ workflows:
         # Optional: set here or in the apple_credentials environment group
         # APP_STORE_APPLE_ID: "6743847382"
 
-      node: 20
+      node: 22
       xcode: latest
 
     cache:
