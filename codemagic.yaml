@@ -15,7 +15,7 @@ workflows:
     # App Store Connect API integration configured in Codemagic UI:
     # Team Settings > Integrations > Developer Portal / App Store Connect API
     integrations:
-      app_store_connect: saaj_virtual_app_store_connect
+      app_store_connect: "SAAJ Virtual Codemagic"
 
     environment:
       groups:
