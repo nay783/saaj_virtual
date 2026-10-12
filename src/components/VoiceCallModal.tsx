@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Mic, MicOff, PhoneOff, ShieldCheck, AlertCircle, RefreshCw, ArrowLeft } from "lucide-react";
 import { AssistantId, ServiceArea } from "@/types/saaj";
 import { getAssistant } from "@/lib/config/assistants";
-import { QuickExitButton } from "@/components/QuickExitButton";
 import { AssistantAvatar } from "@/components/AssistantAvatar";
 import { vapiClient } from "@/lib/vapi/client";
 import { VapiCallStatus } from "@/lib/vapi/types";
@@ -13,14 +12,12 @@ interface VoiceCallModalProps {
   assistantId: AssistantId;
   serviceArea: ServiceArea;
   onClose: () => void;
-  onQuickExit?: () => void;
 }
 
 export const VoiceCallModal: React.FC<VoiceCallModalProps> = ({
   assistantId,
   serviceArea,
   onClose,
-  onQuickExit,
 }) => {
   const assistant = getAssistant(assistantId);
   const [callStatus, setCallStatus] = useState<VapiCallStatus>("starting");
@@ -99,18 +96,6 @@ export const VoiceCallModal: React.FC<VoiceCallModalProps> = ({
     onClose();
   };
 
-  const handleQuickExit = () => {
-    if (callStatus === "active" || callStatus === "starting") {
-      vapiClient.stopVoiceCall("user-pressed-quick-exit");
-    }
-    cleanupTimer();
-    if (onQuickExit) {
-      onQuickExit();
-    } else {
-      onClose();
-    }
-  };
-
   const toggleMute = () => {
     const nextMute = !isMuted;
     vapiClient.setMuted(nextMute);
@@ -125,7 +110,7 @@ export const VoiceCallModal: React.FC<VoiceCallModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-between bg-slate-950 text-white p-6 safe-top safe-bottom animate-fadeIn">
-      {/* Header with Back button and Quick Exit */}
+      {/* Header with Back button */}
       <div className="flex items-center justify-between max-w-xl mx-auto w-full">
         <button
           onClick={handleBack}
@@ -140,8 +125,6 @@ export const VoiceCallModal: React.FC<VoiceCallModalProps> = ({
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
           <span>Chamada Confidencial SAAJ</span>
         </div>
-
-        <QuickExitButton onQuickExit={handleQuickExit} variant="badge" />
       </div>
 
       {/* Main Avatar & Call Status Display */}

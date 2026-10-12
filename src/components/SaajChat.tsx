@@ -3,7 +3,6 @@
 import React from "react";
 import { ArrowLeft } from "lucide-react";
 import { AssistantId, ServiceArea } from "@/types/saaj";
-import { QuickExitButton } from "@/components/QuickExitButton";
 import { ConvoCoreChat } from "@/components/ConvoCoreChat";
 
 interface SaajChatProps {
@@ -11,7 +10,6 @@ interface SaajChatProps {
   serviceArea: ServiceArea;
   anonymousUserId?: string;
   onBack?: () => void;
-  onQuickExit?: () => void;
   source?: "profile" | "conversas";
 }
 
@@ -20,7 +18,6 @@ export const SaajChat: React.FC<SaajChatProps> = ({
   serviceArea,
   anonymousUserId,
   onBack,
-  onQuickExit,
   source = "conversas",
 }) => {
   return (
@@ -38,8 +35,6 @@ export const SaajChat: React.FC<SaajChatProps> = ({
         ) : (
           <div />
         )}
-
-        <QuickExitButton onQuickExit={onQuickExit} variant="badge" />
       </div>
 
       {/* ConvoCore User-Facing Chat Engine */}

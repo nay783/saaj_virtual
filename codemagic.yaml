@@ -27,6 +27,7 @@ workflows:
         distribution_type: app_store
         bundle_identifier: mz.co.ncai.saajvirtual
 
+
       vars:
         BUNDLE_ID: "mz.co.ncai.saajvirtual"
         XCODE_PROJECT: "ios/App/App.xcodeproj"
@@ -67,7 +68,7 @@ workflows:
         script: |
           npx cap sync ios
 
-      - name: Set up iOS code signing settings
+      - name: Set up code signing settings on Xcode project
         script: |
           xcode-project use-profiles --project "$XCODE_PROJECT"
 

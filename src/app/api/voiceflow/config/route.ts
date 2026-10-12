@@ -2,7 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { AssistantId, ServiceArea } from "@/types/saaj";
 import { resolveVoiceflowProjectId } from "@/lib/integrations/voiceflow";
 
+export const dynamic = "force-static";
+
 export async function GET(req: NextRequest) {
+  if (process.env.CAPACITOR_BUILD === "true") {
+    return NextResponse.json({ message: "SAAJ Virtual Mobile API Endpoint" });
+  }
+
   const { searchParams } = new URL(req.url);
   const assistant = searchParams.get("assistant") as AssistantId;
   const serviceArea = searchParams.get("serviceArea") as ServiceArea;

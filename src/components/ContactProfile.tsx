@@ -5,7 +5,6 @@ import { MessageSquare, PhoneCall, ShieldCheck, ArrowLeft, Info } from "lucide-r
 import { AssistantId, ServiceArea } from "@/types/saaj";
 import { getAssistant } from "@/lib/config/assistants";
 import { getServiceCapabilities } from "@/lib/routing/location";
-import { QuickExitButton } from "@/components/QuickExitButton";
 import { AssistantAvatar } from "@/components/AssistantAvatar";
 import { vapiClient } from "@/lib/vapi/client";
 
@@ -57,8 +56,6 @@ export const ContactProfile: React.FC<ContactProfileProps> = ({
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
           <span>Atendimento Privado SAAJ</span>
         </div>
-
-        <QuickExitButton variant="badge" />
       </div>
 
       {/* Main Profile Content Area */}

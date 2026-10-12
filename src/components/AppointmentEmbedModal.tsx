@@ -3,18 +3,15 @@
 import React, { useEffect, useState } from "react";
 import { X, Calendar, ShieldCheck, AlertCircle } from "lucide-react";
 import { ServiceArea } from "@/types/saaj";
-import { QuickExitButton } from "@/components/QuickExitButton";
 
 interface AppointmentEmbedModalProps {
   serviceArea: ServiceArea;
   onClose: () => void;
-  onQuickExit?: () => void;
 }
 
 export const AppointmentEmbedModal: React.FC<AppointmentEmbedModalProps> = ({
   serviceArea,
   onClose,
-  onQuickExit,
 }) => {
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
 
@@ -80,7 +77,6 @@ export const AppointmentEmbedModal: React.FC<AppointmentEmbedModalProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
-          <QuickExitButton onQuickExit={onQuickExit} variant="badge" />
           <button
             onClick={onClose}
             className="p-2 rounded-full text-slate-500 hover:bg-slate-100 transition-colors active-press"

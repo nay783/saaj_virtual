@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { AlertCircle, RefreshCw } from "lucide-react";
 import { AssistantId, ServiceArea } from "@/types/saaj";
 import { loadVoiceflowSDK } from "@/lib/integrations/voiceflowLoader";
+import { getApiUrl } from "@/lib/api/url";
 
 interface VoiceflowEmbeddedChatProps {
   assistant: AssistantId;
@@ -28,7 +29,7 @@ export const VoiceflowEmbeddedChat: React.FC<VoiceflowEmbeddedChatProps> = ({
       try {
         // Fetch project configuration from server API
         const res = await fetch(
-          `/api/voiceflow/config?assistant=${assistant}&serviceArea=${serviceArea}`
+          getApiUrl(`/api/voiceflow/config?assistant=${assistant}&serviceArea=${serviceArea}`)
         );
 
         if (!res.ok) {

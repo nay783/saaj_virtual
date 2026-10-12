@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AssistantId, ServiceArea } from "@/types/saaj";
 
+export const dynamic = "force-static";
+
 interface ChatApiRequestBody {
   assistant: AssistantId;
   serviceArea: ServiceArea;
@@ -48,6 +50,10 @@ function getVoiceflowCredentials(assistant: AssistantId, serviceArea: ServiceAre
 }
 
 export async function POST(req: NextRequest) {
+  if (process.env.CAPACITOR_BUILD === "true") {
+    return NextResponse.json({ message: "SAAJ Virtual Mobile API Endpoint" });
+  }
+
   try {
     const body: ChatApiRequestBody = await req.json();
     const { assistant, serviceArea, messageText, voiceflowSessionId } = body;

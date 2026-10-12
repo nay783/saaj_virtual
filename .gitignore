@@ -16,5 +16,6 @@
 # IDE & OS
 .DS_Store
 *.pem
+*.tsbuildinfo
 .vscode/
 .idea/
