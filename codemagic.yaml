@@ -1,0 +1,108 @@
+# ==============================================================================
+# SAAJ Virtual — Codemagic CI/CD Configuration for iOS (Capacitor)
+# ==============================================================================
+# Framework: Next.js + Capacitor (SPM)
+# Bundle Identifier: mz.co.ncai.saajvirtual
+# Target: Release Archive & IPA export for TestFlight
+# ==============================================================================
+
+workflows:
+  ios-release:
+    name: SAAJ Virtual iOS Release
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+
+    # App Store Connect API integration configured in Codemagic UI:
+    # Team Settings > Integrations > Developer Portal / App Store Connect API
+    integrations:
+      app_store_connect: saaj_virtual_app_store_connect
+
+    environment:
+      groups:
+        # Environment variable group for secrets & Apple metadata
+        # (Configure in Codemagic UI: Application > Environment variables > Group: apple_credentials)
+        - apple_credentials
+
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: mz.co.ncai.saajvirtual
+
+      vars:
+        BUNDLE_ID: "mz.co.ncai.saajvirtual"
+        XCODE_PROJECT: "ios/App/App.xcodeproj"
+        XCODE_SCHEME: "App"
+        # Apple ID / App ID from App Store Connect (App > General > App Information > Apple ID)
+        # Optional: set here or in the apple_credentials environment group
+        # APP_STORE_APPLE_ID: "6743847382"
+
+      node: 20
+      xcode: latest
+
+    cache:
+      cache_paths:
+        - $CM_BUILD_DIR/node_modules
+
+    triggering:
+      events:
+        - push
+        - tag
+      branch_patterns:
+        - pattern: "main"
+          include: true
+          source: true
+      tag_patterns:
+        - pattern: "v*"
+          include: true
+
+    scripts:
+      - name: Install dependencies with package lock
+        script: |
+          npm ci
+
+      - name: Build Next.js mobile web export
+        script: |
+          npm run build:mobile
+
+      - name: Sync Capacitor iOS platform
+        script: |
+          npx cap sync ios
+
+      - name: Set up iOS code signing settings
+        script: |
+          xcode-project use-profiles --project "$XCODE_PROJECT"
+
+      - name: Increment iOS build number
+        script: |
+          cd ios/App
+          # If APP_STORE_APPLE_ID is configured, retrieve the latest build number from TestFlight
+          LATEST_BUILD_NUMBER=""
+          if [ -n "$APP_STORE_APPLE_ID" ]; then
+            LATEST_BUILD_NUMBER=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo "")
+          fi
+
+          if [ -n "$LATEST_BUILD_NUMBER" ]; then
+            UPDATED_BUILD_NUMBER=$(($LATEST_BUILD_NUMBER + 1))
+            echo "Found existing TestFlight build number ($LATEST_BUILD_NUMBER). Incrementing to: $UPDATED_BUILD_NUMBER"
+          else
+            UPDATED_BUILD_NUMBER=$BUILD_NUMBER
+            echo "Using Codemagic build number: $UPDATED_BUILD_NUMBER"
+          fi
+
+          agvtool new-version -all "$UPDATED_BUILD_NUMBER"
+
+      - name: Build IPA for release
+        script: |
+          xcode-project build-ipa \
+            --project "$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      # Upload IPA to TestFlight; do NOT submit automatically for full App Store review
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false
