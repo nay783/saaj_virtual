@@ -35,7 +35,7 @@ export const MaisView: React.FC<MaisViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen-dvh flex flex-col bg-ambient-neutral pb-28 safe-top">
+    <div className="min-h-screen-dvh flex flex-col bg-ambient-neutral pb-nav-safe safe-top">
       {/* Top Header */}
       <div className="px-4 py-4 max-w-xl mx-auto w-full">
         <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Mais</h1>
@@ -166,7 +166,7 @@ export const MaisView: React.FC<MaisViewProps> = ({
 
       {/* Confirmation Modal: Clear Conversations */}
       {confirmClearConversations && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 safe-top safe-bottom animate-fadeIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 pt-[calc(env(safe-area-inset-top,0px)+1rem)] pb-[calc(env(safe-area-inset-bottom,0px)+1rem)] animate-fadeIn">
           <div className="bg-white/95 backdrop-blur-2xl rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-elevated border border-slate-900/[0.06]">
             <h3 className="text-lg font-semibold text-slate-900">Limpar Conversas?</h3>
             <p className="text-xs text-slate-600 leading-relaxed font-normal">
@@ -192,7 +192,7 @@ export const MaisView: React.FC<MaisViewProps> = ({
 
       {/* Confirmation Modal: Reset Device */}
       {confirmResetDevice && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 safe-top safe-bottom animate-fadeIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 pt-[calc(env(safe-area-inset-top,0px)+1rem)] pb-[calc(env(safe-area-inset-bottom,0px)+1rem)] animate-fadeIn">
           <div className="bg-white/95 backdrop-blur-2xl rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-elevated border border-slate-900/[0.06]">
             <h3 className="text-lg font-semibold text-rose-600">Limpar Todos os Dados?</h3>
             <p className="text-xs text-slate-600 leading-relaxed font-normal">
@@ -218,7 +218,7 @@ export const MaisView: React.FC<MaisViewProps> = ({
 
       {/* Information Sheet Modals */}
       {activeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 safe-top safe-bottom animate-fadeIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 pt-[calc(env(safe-area-inset-top,0px)+1rem)] pb-[calc(env(safe-area-inset-bottom,0px)+1rem)] animate-fadeIn">
           <div className="bg-white/95 backdrop-blur-2xl rounded-3xl p-6 max-w-md w-full space-y-4 shadow-elevated border border-slate-900/[0.06] max-h-[80vh] overflow-y-auto">
             {activeModal === "about" && (
               <>

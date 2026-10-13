@@ -69,7 +69,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
   };
 
   return (
-    <div className="min-h-screen-dvh flex flex-col justify-between bg-ambient-neutral px-4 py-6 safe-top safe-bottom">
+    <div className="min-h-screen-dvh flex flex-col justify-between bg-ambient-neutral px-4 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)] pb-[calc(env(safe-area-inset-bottom,0px)+1.5rem)]">
       {/* Top Header Identity */}
       <div className="flex items-center justify-between max-w-xl mx-auto w-full mb-2">
         <div className="flex items-center gap-2.5">

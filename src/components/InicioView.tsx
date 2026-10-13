@@ -19,7 +19,7 @@ export const InicioView: React.FC<InicioViewProps> = ({
   onChangeLocation,
 }) => {
   return (
-    <div className="min-h-screen-dvh flex flex-col bg-ambient-neutral pb-28 safe-top">
+    <div className="min-h-screen-dvh flex flex-col bg-ambient-neutral pb-nav-safe safe-top">
       {/* Top Header */}
       <div className="px-4 py-4 max-w-xl mx-auto w-full flex items-center justify-between">
         <div className="flex items-center gap-2.5">

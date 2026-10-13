@@ -38,7 +38,7 @@ export const AppointmentEmbedModal: React.FC<AppointmentEmbedModalProps> = ({
 
   if (!calLink) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 safe-top safe-bottom">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 pt-[calc(env(safe-area-inset-top,0px)+1rem)] pb-[calc(env(safe-area-inset-bottom,0px)+1rem)]">
         <div className="bg-white rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-elevated border border-slate-900/[0.06]">
           <AlertCircle className="w-10 h-10 text-amber-500 mx-auto" />
           <h3 className="text-lg font-semibold text-slate-900">Serviço indisponível</h3>
@@ -59,9 +59,9 @@ export const AppointmentEmbedModal: React.FC<AppointmentEmbedModalProps> = ({
   const iframeSrc = `https://app.cal.com/${calLink}?embed=true&layout=month_view`;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-slate-50 safe-top safe-bottom animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex flex-col bg-slate-50 overflow-hidden animate-fadeIn">
       {/* Top Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-slate-900/[0.06] shadow-2xs">
+      <div className="flex items-center justify-between px-4 pt-[calc(env(safe-area-inset-top,0px)+0.75rem)] pb-3 bg-white border-b border-slate-900/[0.06] shadow-2xs shrink-0">
         <div className="flex items-center gap-2.5">
           <div className="p-2 rounded-xl bg-blue-50 text-tonito-600 border border-blue-100">
             <Calendar className="w-5 h-5" />
@@ -107,7 +107,7 @@ export const AppointmentEmbedModal: React.FC<AppointmentEmbedModalProps> = ({
       </div>
 
       {/* Footer privacy reminder */}
-      <div className="bg-white border-t border-slate-900/[0.06] px-4 py-2.5 text-center text-[11px] text-slate-400 font-normal">
+      <div className="bg-white border-t border-slate-900/[0.06] px-4 pt-2.5 pb-[calc(env(safe-area-inset-bottom,0px)+0.625rem)] text-center text-[11px] text-slate-400 font-normal shrink-0">
         Os teus dados pessoais são recolhidos exclusivamente para o agendamento da tua consulta SAAJ.
       </div>
     </div>

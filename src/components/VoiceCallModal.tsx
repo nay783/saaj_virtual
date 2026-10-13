@@ -109,7 +109,7 @@ export const VoiceCallModal: React.FC<VoiceCallModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-between bg-slate-950 text-white p-6 safe-top safe-bottom animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex flex-col justify-between bg-slate-950 text-white px-6 pt-[calc(env(safe-area-inset-top,0px)+1.25rem)] pb-[calc(env(safe-area-inset-bottom,0px)+1.5rem)] animate-fadeIn">
       {/* Header with Back button */}
       <div className="flex items-center justify-between max-w-xl mx-auto w-full">
         <button
@@ -205,7 +205,7 @@ export const VoiceCallModal: React.FC<VoiceCallModalProps> = ({
 
       {/* Control Buttons Footer */}
       {callStatus !== "error" && (
-        <div className="flex items-center justify-center gap-6 pb-6 max-w-xl mx-auto w-full">
+        <div className="flex items-center justify-center gap-6 max-w-xl mx-auto w-full">
           {/* Mute button */}
           <button
             onClick={toggleMute}

@@ -14,7 +14,7 @@ export const ConversasView: React.FC<ConversasViewProps> = ({
   onStartConversation,
 }) => {
   return (
-    <div className="min-h-screen-dvh flex flex-col bg-ambient-neutral pb-28 safe-top">
+    <div className="min-h-screen-dvh flex flex-col bg-ambient-neutral pb-nav-safe safe-top">
       {/* Top Header */}
       <div className="px-4 py-4 max-w-xl mx-auto w-full">
         <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Conversas</h1>

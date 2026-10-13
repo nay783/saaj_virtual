@@ -37,7 +37,7 @@ export const ContactProfile: React.FC<ContactProfileProps> = ({
   }, [hasVoiceCall]);
 
   return (
-    <div className={`min-h-screen-dvh flex flex-col ${ambientBgClass} safe-top safe-bottom`}>
+    <div className={`min-h-screen-dvh flex flex-col ${ambientBgClass} safe-top pb-[calc(env(safe-area-inset-bottom,0px)+1rem)]`}>
       {/* Top Header */}
       <div className="flex items-center justify-between px-4 py-4 max-w-xl mx-auto w-full">
         {onBack ? (
