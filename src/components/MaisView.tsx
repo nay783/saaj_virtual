@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { MapPin, Shield, Trash2, HelpCircle, Info, FileText, ChevronRight } from "lucide-react";
 import { LocationState } from "@/types/saaj";
 import { clearConversationsOnly, resetAllDeviceData } from "@/lib/state/storage";
@@ -244,6 +245,13 @@ export const MaisView: React.FC<MaisViewProps> = ({
                 <p className="text-xs text-slate-600 leading-relaxed font-normal">
                   O SAAJ Virtual não exige registo de conta para apoio inicial. A tua privacidade é garantida por omissão.
                 </p>
+                <Link
+                  href="/privacy"
+                  className="w-full py-3 px-4 rounded-xl bg-blue-50 hover:bg-blue-100/80 text-tonito-700 border border-blue-100 font-semibold text-xs flex items-center justify-between active-press transition-colors"
+                >
+                  <span>Ler Política de Privacidade completa</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
               </>
             )}
 
