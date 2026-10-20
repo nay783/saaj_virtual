@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { MapPin, Shield, Trash2, HelpCircle, Info, FileText, ChevronRight } from "lucide-react";
 import { LocationState } from "@/types/saaj";
 import { clearConversationsOnly, resetAllDeviceData } from "@/lib/state/storage";
@@ -157,10 +158,21 @@ export const MaisView: React.FC<MaisViewProps> = ({
           </div>
         </div>
 
-        {/* Developer attribution */}
-        <div className="text-center pt-2 text-xs text-slate-400 font-normal">
-          <p className="font-semibold text-slate-600 mb-0.5">SAAJ Virtual V1.0</p>
-          <p>Desenvolvido por NCAI Consultorias e Serviços, EI</p>
+        {/* Developer attribution & Legal links */}
+        <div className="text-center pt-2 text-xs text-slate-400 font-normal space-y-1.5">
+          <div className="flex items-center justify-center gap-3 text-slate-500 font-medium">
+            <Link href="/terms" className="hover:text-slate-800 underline underline-offset-2 transition-colors">
+              Termos e Condições
+            </Link>
+            <span>•</span>
+            <Link href="/privacy" className="hover:text-slate-800 underline underline-offset-2 transition-colors">
+              Política de Privacidade
+            </Link>
+          </div>
+          <div>
+            <p className="font-semibold text-slate-600 mb-0.5">SAAJ Virtual V1.0</p>
+            <p>Desenvolvido por NCAI Consultorias e Serviços, EI</p>
+          </div>
         </div>
       </div>
 
@@ -242,8 +254,24 @@ export const MaisView: React.FC<MaisViewProps> = ({
               <>
                 <h3 className="text-lg font-semibold text-slate-900">Termos e Privacidade</h3>
                 <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                  O SAAJ Virtual não exige registo de conta para apoio inicial. A tua privacidade é garantida por omissão.
+                  O SAAJ Virtual não exige registo de conta para apoio inicial. Consulta os nossos documentos legais para saberes como funciona o serviço e como os dados são tratados.
                 </p>
+                <div className="space-y-2.5">
+                  <Link
+                    href="/privacy"
+                    className="w-full py-3 px-4 rounded-xl bg-blue-50 hover:bg-blue-100/80 text-tonito-700 border border-blue-100 font-semibold text-xs flex items-center justify-between active-press transition-colors"
+                  >
+                    <span>Ler Política de Privacidade</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    href="/terms"
+                    className="w-full py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-800 border border-slate-200 font-semibold text-xs flex items-center justify-between active-press transition-colors"
+                  >
+                    <span>Ler Termos e Condições de Utilização</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
               </>
             )}
 
