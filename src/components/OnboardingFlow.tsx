@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   MapPin,
   ChevronRight,
@@ -349,9 +350,18 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
         </div>
       )}
 
-      {/* Footer attribution */}
-      <div className="text-center text-[11px] text-slate-400 mt-2 font-normal">
-        Desenvolvido por NCAI Consultorias e Serviços, EI
+      {/* Footer attribution & legal links */}
+      <div className="text-center text-[11px] text-slate-400 mt-2 font-normal space-y-1">
+        <div className="flex items-center justify-center gap-3 text-slate-500 font-medium">
+          <Link href="/terms" className="hover:text-slate-800 underline underline-offset-2 transition-colors">
+            Termos e Condições
+          </Link>
+          <span>•</span>
+          <Link href="/privacy" className="hover:text-slate-800 underline underline-offset-2 transition-colors">
+            Política de Privacidade
+          </Link>
+        </div>
+        <div>Desenvolvido por NCAI Consultorias e Serviços, EI</div>
       </div>
     </div>
   );
